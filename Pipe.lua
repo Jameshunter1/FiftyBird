@@ -10,30 +10,46 @@
 ]]
 
 Pipe = Class{}
+ 
 
 -- since we only want the image loaded once, not per instantation, define it externally
-local PIPE_IMAGE = love.graphics.newImage('pipe.png')
+    local PIPE_IMAGE = love.graphics.newImage('pipe.png')
+    local PIPE_WIDTH = 40 
+    local PIPE_HEIGHT = 50
+    
+   
 
 function Pipe:init(orientation, y)
-    self.x = VIRTUAL_WIDTH + 64
-    self.y = y
+    
+
+    local pipeGap = math.random(10, 125)
+    local topPipeHeight = math.random(700, 1000)
 
     self.width = PIPE_WIDTH
-    self.height = PIPE_HEIGHT
-
+    self.height = topPipeHeight
     self.orientation = orientation
+
+    if orientation == 'top' then
+        self.y = y - topPipeHeight - pipeGap - PIPE_HEIGHT
+    else
+        self.y = y + pipeGap
+    end
+
+    self.x = VIRTUAL_WIDTH + pipeGap
+
+    self.remove = false
 end
 
+function Pipe:update(dt)
+    -- Add update logic if needed
+end
 function Pipe:update(dt)
     
 end
 
 function Pipe:render()
     love.graphics.draw(PIPE_IMAGE, self.x, 
-
-        -- shift pipe rendering down by its height if flipped vertically
-        (self.orientation == 'top' and self.y + PIPE_HEIGHT or self.y), 
-
-        -- scaling by -1 on a given axis flips (mirrors) the image on that axis
+        (self.orientation == 'top' and self.y + self.height or self.y), 
         0, 1, self.orientation == 'top' and -1 or 1)
 end
+
